@@ -46,9 +46,28 @@ npx steam-guide https://steamcommunity.com/sharedfiles/filedetails/?id=300504394
 ## Output
 
 The tool creates:
-- An `images/` directory containing all downloaded images
+- An `images/` directory containing all downloaded images from the guide
 - A `guide.md` file (for Markdown format) or `guide.html` file (for HTML format)
 - For PDF format: HTML file with instructions on how to convert to PDF
+
+### Output Structure
+
+```
+my_output/
+├── images/
+│   ├── image_1.jpg
+│   ├── image_2.png
+│   └── ...
+└── guide.md (or guide.html)
+```
+
+## Features
+
+- Downloads Steam community guides
+- Extracts and saves all images from the guide
+- Converts to multiple formats: Markdown, HTML, or PDF-ready HTML
+- Preserves guide structure and formatting
+- Supports relative image paths in output
 
 ## Development
 
@@ -62,6 +81,11 @@ npm run build
 # Test locally
 node dist/index.js <guide-url> <format> [output-dir]
 ```
+
+## Requirements
+
+- Node.js 14 or higher
+- Internet connection to access Steam Community guides
 
 ## License
 
