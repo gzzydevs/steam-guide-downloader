@@ -20,10 +20,36 @@ export async function downloadGuide(url: string, outputDir: string): Promise<Gui
   // Extract guide information
   const title = $('.workshopItemTitle').text().trim() || 'Steam Guide';
   const author = $('.friendBlockContent').text().trim() || 'Unknown';
-  const description = $('.workshopItemDescription').text().trim() || '';
+  const description = $('.guideTopDescription, #highlightContent, .workshopItemDescription').first().text().trim() || '';
   
-  // Get the main content
-  const contentElement = $('.subSectionDesc, .guide_content, #highlightContent');
+  // Get the main content - Steam guides have sections with titles and descriptions
+  const guideContainer = $('.guide.subSections');
+  let contentHtml = '';
+  
+  if (guideContainer.length > 0) {
+    // Process each subsection with its title
+    guideContainer.find('.subSection').each((_, section) => {
+      const sectionTitle = $(section).find('.subSectionTitle').html();
+      const sectionContent = $(section).find('.subSectionDesc').html();
+      
+      if (sectionTitle) {
+        contentHtml += `<h2>${sectionTitle}</h2>\n`;
+      }
+      if (sectionContent) {
+        contentHtml += sectionContent + '\n';
+      }
+    });
+  }
+  
+  // Fallback to simpler selectors if no subSections found
+  if (!contentHtml) {
+    const contentElement = $('.subSectionDesc, .guide_content, #highlightContent');
+    contentHtml = contentElement.html() || '';
+  }
+  
+  // Load the processed HTML back into cheerio for image processing
+  const $content = cheerio.load(`<div>${contentHtml}</div>`);
+  const contentElement = $content('div').first();
   
   // Create images directory
   const imagesDir = path.join(outputDir, 'images');
@@ -43,6 +69,12 @@ export async function downloadGuide(url: string, outputDir: string): Promise<Gui
     
     if (!imageUrl) continue;
     
+    // Skip UI/icon images
+    if (imageUrl.includes('header_') || imageUrl.includes('footer') || 
+        imageUrl.includes('review_award') || imageUrl.includes('logo_')) {
+      continue;
+    }
+    
     // Handle relative URLs
     if (imageUrl.startsWith('//')) {
       imageUrl = 'https:' + imageUrl;
@@ -51,15 +83,19 @@ export async function downloadGuide(url: string, outputDir: string): Promise<Gui
     }
     
     try {
-      const filename = `image_${i + 1}${path.extname(imageUrl).split('?')[0] || '.jpg'}`;
+      // Get file extension from URL or default to .jpg
+      const urlPath = imageUrl.split('?')[0];
+      const ext = path.extname(urlPath) || '.jpg';
+      const filename = `image_${images.length + 1}${ext}`;
       const localPath = path.join(imagesDir, filename);
       
-      console.log(`Downloading image ${i + 1}/${imageElements.length}...`);
+      console.log(`Downloading image ${images.length + 1}...`);
       const imageResponse = await axios.get(imageUrl, {
         responseType: 'arraybuffer',
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
+        },
+        timeout: 30000
       });
       
       fs.writeFileSync(localPath, imageResponse.data);
@@ -76,6 +112,8 @@ export async function downloadGuide(url: string, outputDir: string): Promise<Gui
       console.warn(`Failed to download image ${imageUrl}:`, error instanceof Error ? error.message : error);
     }
   }
+  
+  console.log(`✓ Downloaded ${images.length} images`);
   
   // Get the processed HTML content
   const content = contentElement.html() || '';
