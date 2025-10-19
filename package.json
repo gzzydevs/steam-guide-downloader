@@ -1,7 +1,7 @@
 {
   "name": "steam-guide-downloader",
   "version": "1.0.0",
-  "description": "Proyecto para descargar guías de steam en formato .html, .pdf o .md (Markdown)",
+  "description": "A powerful CLI tool to download Steam Community guides and convert them to Markdown, HTML, or PDF-ready formats",
   "main": "dist/index.js",
   "bin": {
     "steam-guide": "dist/index.js"
@@ -21,9 +21,21 @@
     "downloader",
     "markdown",
     "pdf",
-    "cli"
+    "html",
+    "cli",
+    "gaming",
+    "community",
+    "converter"
   ],
-  "author": "",
+  "author": "gzzydevs",
+  "homepage": "https://github.com/gzzydevs/steam-guide-downloader#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gzzydevs/steam-guide-downloader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gzzydevs/steam-guide-downloader/issues"
+  },
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^24.8.1",

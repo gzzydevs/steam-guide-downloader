@@ -49,4 +49,5 @@ async function main() {
   }
 }
 
+// Run the CLI
 main();
