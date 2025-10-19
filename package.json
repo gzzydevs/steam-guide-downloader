@@ -1,0 +1,39 @@
+{
+  "name": "steam-guide-downloader",
+  "version": "1.0.0",
+  "description": "Proyecto para descargar guías de steam en formato .html, .pdf o .md (Markdown)",
+  "main": "dist/index.js",
+  "bin": {
+    "steam-guide": "dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "steam",
+    "guide",
+    "downloader",
+    "markdown",
+    "pdf",
+    "cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.8.1",
+    "@types/turndown": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "cheerio": "^1.1.2",
+    "turndown": "^7.2.1"
+  }
+}
